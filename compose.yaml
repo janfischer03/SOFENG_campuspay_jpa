@@ -1,0 +1,21 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: campuspay-mysql-dev
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3306:3306"
+    env_file:
+      - .env.dev
+    volumes:
+      - campuspay_mysql_data:/var/lib/mysql
+    healthcheck:
+      # $$: Variable erst im Container auswerten, nicht in Compose.
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD 
+          --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
+volumes:
+  campuspay_mysql_data:
